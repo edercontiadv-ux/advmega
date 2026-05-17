@@ -1,0 +1,46 @@
+name: DJEN Publication Scraper
+
+on:
+  schedule:
+    # Roda todos os dias às 09:00 UTC (06:00 BRT - Horário de Brasília)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Permite rodar manualmente pelo painel do GitHub
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: scraper/package-lock.json
+
+
+    - name: Install Dependencies
+      run: |
+        cd scraper
+        npm install
+
+    - name: Install Playwright Browsers and System Dependencies
+      run: |
+        cd scraper
+        npx playwright install chromium --with-deps
+
+    - name: Run Build (TypeScript Compilation)
+      run: |
+        cd scraper
+        npm run build
+
+    - name: Execute Scraper Pipeline
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      run: |
+        cd scraper
+        npm run start
