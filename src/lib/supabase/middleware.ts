@@ -27,9 +27,13 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user || null
+  } catch (err) {
+    console.error("Erro na autenticação do middleware:", err)
+  }
 
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login')
 
