@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Sidebar from "@/components/Sidebar";
 import "./globals.css";
 
 // Forçar novo build da Vercel para limpar o cache de borda do novo domínio
@@ -29,7 +30,12 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-[#ededed]">{children}</body>
+      <body className="min-h-full flex bg-[#0a0a0a] text-[#ededed]">
+        <Sidebar />
+        <main className="ml-[200px] flex-1 p-8">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
