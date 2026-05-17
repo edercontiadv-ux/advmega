@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+// Forçar novo build da Vercel para limpar o cache de borda do novo domínio
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
