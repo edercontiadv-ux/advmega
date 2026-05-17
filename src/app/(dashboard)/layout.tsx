@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { FileText, Activity, LogOut, Scale, Settings } from "lucide-react"
@@ -10,11 +11,35 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        router.push("/login")
+      } else {
+        setLoading(false)
+      }
+    }
+    checkAuth()
+  }, [router, supabase])
 
   async function handleLogout() {
     await supabase.auth.signOut()
     router.push("/login")
     router.refresh()
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-zinc-400">
+        <div className="text-center space-y-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-100 mx-auto"></div>
+          <p className="text-sm font-medium text-zinc-400">Verificando acesso...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
