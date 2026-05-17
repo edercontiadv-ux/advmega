@@ -1,46 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { FileText, Activity, LogOut, Scale, Settings } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+import { usePathname } from "next/navigation"
+import { FileText, Activity, Scale, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const router = useRouter()
-  const supabase = createClient()
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function checkAuth() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        router.push("/login")
-      } else {
-        setLoading(false)
-      }
-    }
-    checkAuth()
-  }, [router, supabase])
-
-  async function handleLogout() {
-    await supabase.auth.signOut()
-    router.push("/login")
-    router.refresh()
-  }
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-zinc-400">
-        <div className="text-center space-y-3">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-100 mx-auto"></div>
-          <p className="text-sm font-medium text-zinc-400">Verificando acesso...</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="flex min-h-screen bg-[#0a0a0a] text-[#ededed]">
@@ -92,16 +58,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </nav>
         </div>
 
-
-        {/* Rodapé da Sidebar */}
-        <div>
-          <button
-            onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-red-950/40 hover:text-red-300"
-          >
-            <LogOut className="size-4" />
-            Sair do Sistema
-          </button>
+        {/* Rodapé da Sidebar (Informação do Escritório) */}
+        <div className="px-2 py-1.5 text-center border-t border-zinc-800 pt-4">
+          <p className="text-[10px] text-zinc-500 font-mono">AdvPlus v1.0</p>
+          <p className="text-[10px] text-zinc-500 font-mono">Uso Interno</p>
         </div>
       </aside>
 
